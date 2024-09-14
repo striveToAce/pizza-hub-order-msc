@@ -8,7 +8,7 @@ services:
     env_file: 
       - .env   # Reference the .env file for environment variables including Prisma's DATABASE_URL
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
       - .:/app
     command: ["npm", "run", "start"]
