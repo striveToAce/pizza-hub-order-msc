@@ -1,0 +1,53 @@
+datasource db {
+  provider = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  createdAt  DateTime    @default(now())
+  status     OrderStatus
+  items      OrderItem[]
+  totalPrice Float
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model MenuItem {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  size        MenuItemSize
+  type        MenuItemType
+  OrderItem   OrderItem[]
+}
+
+enum MenuItemSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum MenuItemType {
+  PIZZA
+  SODA
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  quantity   Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String
+  menuItemId String
+}
