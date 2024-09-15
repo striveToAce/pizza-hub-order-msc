@@ -135,3 +135,14 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error updating order status" });
   }
 };
+
+
+export const checkHealth = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({
+      "message":"order service working fine"
+    });
+  } catch (error) {
+    res.status(500).json({ error: "order service not working" });
+  }
+};

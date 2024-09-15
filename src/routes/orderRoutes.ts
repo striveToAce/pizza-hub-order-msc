@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createOrder, getOrderById, getAllOrders, updateOrderStatus } from '../controllers/orderController';
+import { createOrder, getOrderById, getAllOrders, updateOrderStatus, checkHealth } from '../controllers/orderController';
 
 const router = Router();
 
@@ -14,5 +14,8 @@ router.get('/order-detail/:id', getOrderById);
 
 // Update order status
 router.patch('/:id/status', updateOrderStatus);
+
+// check health
+router.get('/health', checkHealth);
 
 export default router;
