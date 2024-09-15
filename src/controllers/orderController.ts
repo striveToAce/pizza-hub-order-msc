@@ -36,6 +36,11 @@ const orderSchema = Joi.object({
   return value; // If valid, return the value
 });
 
+// Define the schema for status validation
+const querySchema = Joi.object({
+  status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED").required(), // Ensure it's one of the valid statuses and is required
+});
+
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
   // Validate request body with Joi
@@ -74,7 +79,15 @@ const parseOrderStatus = (status: any): OrderStatus => {
 // Get all orders by status
 export const getAllOrders = async (req: Request, res: Response) => {
   const { status } = req.query;
-  const orderStatus = parseOrderStatus(status);
+  // Validate the request query
+  const { error, value } = querySchema.validate(req.query);
+
+  if (error) {
+    // If validation fails, respond with an error
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  const orderStatus = parseOrderStatus(value.status);
   try {
     const orders = await getAllOrdersService(orderStatus);
     res.status(200).json(orders);

@@ -33,6 +33,8 @@ model MenuItem {
   size        MenuItemSize
   type        MenuItemType
   OrderItem   OrderItem[]
+  createdAt   DateTime     @default(now()) // Automatically set when created
+  updatedAt   DateTime     @updatedAt      // Automatically set when updated
 }
 
 enum MenuItemSize {

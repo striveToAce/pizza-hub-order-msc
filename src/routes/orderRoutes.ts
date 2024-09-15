@@ -7,10 +7,10 @@ const router = Router();
 router.post('/order-now', createOrder);
 
 // Get all orders by status
-router.get('/', getAllOrders);
+router.get('/get-orders', getAllOrders);
 
 // Get order by ID
-router.get('/:id', getOrderById);
+router.get('/order-detail/:id', getOrderById);
 
 // Update order status
 router.patch('/:id/status', updateOrderStatus);
