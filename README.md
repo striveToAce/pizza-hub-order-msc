@@ -160,7 +160,7 @@ Make sure to define this in the `.env` or `.env.local` file.
 First, ensure that the **Docker image** for the service is built and pushed to **Docker Hub**:
 
 ```bash
-docker build -t docker.io/your-username/pizza-fusion-order-msc .
+docker build -t docker.io/docker380431/pizza-fusion-order-msc .
 docker push docker.io/your-username/pizza-fusion-order-msc
 ```
 
