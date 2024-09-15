@@ -13,11 +13,12 @@ export const createOrderService = async (
   totalPrice: number,
   pizzaCount: number,
   sodaCount: number,
-  estimatedCompletionTime: number
+  estimatedCompletionTime: number,
+  status:OrderStatus
 ) => {
   const order = await prisma.order.create({
     data: {
-      status: OrderStatus.PENDING, // Enum type status
+      status, // Enum type status
       totalPrice,
       pizzaCount,
       sodaCount,

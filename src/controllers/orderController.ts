@@ -19,6 +19,7 @@ const orderSchema = Joi.object({
     )
     .min(1)
     .required(),
+  status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED").required(),
   totalPrice: Joi.number().positive().required(),
   pizzaCount: Joi.number().integer().min(0).required(),
   sodaCount: Joi.number().integer().min(0).required(),
@@ -56,13 +57,15 @@ export const createOrder = async (req: Request, res: Response) => {
       pizzaCount,
       sodaCount,
       estimatedCompletionTime,
+      status
     } = req.body;
     const order = await createOrderService(
       items,
       totalPrice,
       pizzaCount,
       sodaCount,
-      estimatedCompletionTime
+      estimatedCompletionTime,
+      status
     );
     res.status(201).json(order);
   } catch (error) {
