@@ -13,7 +13,7 @@ export const createOrderService = async (
   totalPrice: number,
   pizzaCount: number,
   sodaCount: number,
-  estimatedCompletionTime: Date | null = null
+  estimatedCompletionTime: number
 ) => {
   const order = await prisma.order.create({
     data: {

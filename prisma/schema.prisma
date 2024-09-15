@@ -16,7 +16,7 @@ model Order {
   totalPrice Float
   pizzaCount         Int
   sodaCount          Int
-  estimatedCompletionTime DateTime?
+  estimatedCompletionTime Int
 }
 
 enum OrderStatus {

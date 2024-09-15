@@ -22,7 +22,7 @@ const orderSchema = Joi.object({
   totalPrice: Joi.number().positive().required(),
   pizzaCount: Joi.number().integer().min(0).required(),
   sodaCount: Joi.number().integer().min(0).required(),
-  estimatedCompletionTime: Joi.date().optional(),
+  estimatedCompletionTime: Joi.number().integer().min(0).required(),
 }).custom((value, helpers) => {
   const { pizzaCount, sodaCount } = value;
 
