@@ -17,6 +17,3 @@ spec:
         image: docker.io/docker380431/pizza-fusion-order-msc:latest
         ports:
         - containerPort: 3001
-        envFrom:
-        - configMapRef:
-            name: pizza-fusion-config
