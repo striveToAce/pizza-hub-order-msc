@@ -10,6 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 // Register routes
-app.use('/api/pizza-fusion/orders', orderRoutes);
+app.use('/api/pizza-fusion/order', orderRoutes);
 
 export default app;
