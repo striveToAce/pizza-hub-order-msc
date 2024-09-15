@@ -1,20 +1,39 @@
-import { Request, Response } from 'express';
-import Joi from 'joi';
-import { createOrderService, getOrderByIdService, getAllOrdersService, updateOrderStatusService } from '../services/orderService';
-import { OrderStatus } from '../types/order';
+import { Request, Response } from "express";
+import Joi from "joi";
+import {
+  createOrderService,
+  getOrderByIdService,
+  getAllOrdersService,
+  updateOrderStatusService,
+} from "../services/orderService";
+import { OrderStatus } from "../types/order";
 
 // Define Joi schema for order validation
 const orderSchema = Joi.object({
-  items: Joi.array().items(
-    Joi.object({
-      menuItemId: Joi.string().uuid().required(),
-      quantity: Joi.number().integer().min(1).required(),
-    })
-  ).min(1).required(),
+  items: Joi.array()
+    .items(
+      Joi.object({
+        menuItemId: Joi.string().uuid().required(),
+        quantity: Joi.number().integer().min(1).required(),
+      })
+    )
+    .min(1)
+    .required(),
   totalPrice: Joi.number().positive().required(),
-  pizzaCount: Joi.number().positive().required(),
-  sodaCount: Joi.number().positive().required(),
-  estimatedCompletionTime:Joi.date().optional()
+  pizzaCount: Joi.number().integer().min(0).required(),
+  sodaCount: Joi.number().integer().min(0).required(),
+  estimatedCompletionTime: Joi.date().optional(),
+}).custom((value, helpers) => {
+  const { pizzaCount, sodaCount } = value;
+
+  // Ensure that the total of pizzaCount and sodaCount is greater than 0
+  if ((pizzaCount || 0) + (sodaCount || 0) <= 0) {
+    return helpers.error(
+      "Total of pizzaCount and sodaCount must be greater than 0"
+    );
+  }
+
+  return value; // If valid, return the value
 });
 
 // Create a new order
@@ -26,11 +45,23 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 
   try {
-    const { items, totalPrice,pizzaCount,sodaCount, estimatedCompletionTime } = req.body;
-    const order = await createOrderService(items, totalPrice,pizzaCount,sodaCount,estimatedCompletionTime);
+    const {
+      items,
+      totalPrice,
+      pizzaCount,
+      sodaCount,
+      estimatedCompletionTime,
+    } = req.body;
+    const order = await createOrderService(
+      items,
+      totalPrice,
+      pizzaCount,
+      sodaCount,
+      estimatedCompletionTime
+    );
     res.status(201).json(order);
   } catch (error) {
-    res.status(500).json({ error: 'Error creating order' });
+    res.status(500).json({ error: "Error creating order" });
   }
 };
 
@@ -48,7 +79,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
     const orders = await getAllOrdersService(orderStatus);
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching orders' });
+    res.status(500).json({ error: "Error fetching orders" });
   }
 };
 
@@ -58,17 +89,17 @@ export const getOrderById = async (req: Request, res: Response) => {
   try {
     const order = await getOrderByIdService(id);
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({ error: "Order not found" });
     }
     res.status(200).json(order);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching order' });
+    res.status(500).json({ error: "Error fetching order" });
   }
 };
 
 // Update order status
 const updateOrderStatusSchema = Joi.object({
-  status: Joi.string().valid('PENDING', 'IN_PROGRESS', 'COMPLETED').required(),
+  status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED").required(),
 });
 
 export const updateOrderStatus = async (req: Request, res: Response) => {
@@ -84,10 +115,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const updatedOrder = await updateOrderStatusService(id, status);
     if (!updatedOrder) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({ error: "Order not found" });
     }
     res.status(200).json(updatedOrder);
   } catch (error) {
-    res.status(500).json({ error: 'Error updating order status' });
+    res.status(500).json({ error: "Error updating order status" });
   }
 };
