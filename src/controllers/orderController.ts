@@ -12,6 +12,9 @@ const orderSchema = Joi.object({
     })
   ).min(1).required(),
   totalPrice: Joi.number().positive().required(),
+  pizzaCount: Joi.number().positive().required(),
+  sodaCount: Joi.number().positive().required(),
+  estimatedCompletionTime:Joi.date().optional()
 });
 
 // Create a new order
@@ -23,8 +26,8 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 
   try {
-    const { items, totalPrice } = req.body;
-    const order = await createOrderService(items, totalPrice);
+    const { items, totalPrice,pizzaCount,sodaCount, estimatedCompletionTime } = req.body;
+    const order = await createOrderService(items, totalPrice,pizzaCount,sodaCount,estimatedCompletionTime);
     res.status(201).json(order);
   } catch (error) {
     res.status(500).json({ error: 'Error creating order' });

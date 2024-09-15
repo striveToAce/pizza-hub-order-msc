@@ -4,7 +4,7 @@ import { createOrder, getOrderById, getAllOrders, updateOrderStatus } from '../c
 const router = Router();
 
 // Place a new order
-router.post('/', createOrder);
+router.post('/order-now', createOrder);
 
 // Get all orders by status
 router.get('/', getAllOrders);

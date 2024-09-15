@@ -1,26 +1,39 @@
-import { PrismaClient } from '@prisma/client';
-import { OrderStatus } from '../types/order';
+import { PrismaClient } from "@prisma/client";
+import { OrderStatus } from "../types/order";
 
 const prisma = new PrismaClient();
 
+interface CreateOrderItem {
+  menuItemId: string;
+  quantity: number;
+}
 // Create a new order
-export const createOrderService = async (items: any[], totalPrice: number) => {
+export const createOrderService = async (
+  items: CreateOrderItem[],
+  totalPrice: number,
+  pizzaCount: number,
+  sodaCount: number,
+  estimatedCompletionTime: Date | null = null
+) => {
   const order = await prisma.order.create({
     data: {
-      status: OrderStatus.PENDING,
+      status: OrderStatus.PENDING, // Enum type status
       totalPrice,
+      pizzaCount,
+      sodaCount,
+      estimatedCompletionTime,
       items: {
-        create: items.map(item => ({
+        create: items.map((item) => ({
           quantity: item.quantity,
           menuItemId: item.menuItemId,
         })),
       },
     },
-    include: { items: true },
+    include: { items: true }, // Include the related order items in the result
   });
+
   return order;
 };
-
 // Get all orders by status
 export const getAllOrdersService = async (status?: OrderStatus) => {
   const whereCondition = status ? { status } : {};
@@ -41,7 +54,10 @@ export const getOrderByIdService = async (id: string) => {
 };
 
 // Update order status
-export const updateOrderStatusService = async (id: string, status: OrderStatus) => {
+export const updateOrderStatusService = async (
+  id: string,
+  status: OrderStatus
+) => {
   const updatedOrder = await prisma.order.update({
     where: { id },
     data: { status },
